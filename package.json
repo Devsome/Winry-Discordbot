@@ -1,0 +1,28 @@
+{
+	"name": "elitebot",
+	"version": "1.0.0",
+	"description": "EliteBot is a nice Discord Bot",
+	"author": "Devsome",
+	"main": "EliteBot.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Devsome/EliteBot"
+	},
+	"bugs": {
+		"url": "https://github.com/Devsome/EliteBot/issues"
+	},
+	"engines": {
+		"node": ">=6.0.0"
+	},
+	"scripts": {
+		"start": "node EliteBot.js"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"discord.js": "hydrabolt/discord.js#indev",
+		"request": "*",
+		"xml2js": "*",
+		"cleverbot-node": "*",
+		"entities": ">=1.1.1"
+	}
+}
