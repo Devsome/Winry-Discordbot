@@ -100,6 +100,7 @@ function bot_config() {
   console.log(cGreen("[INFO]"), "\tLoading the config file.");
   if(!config.token) console.log(cRed("[WARN]") , "\tPlease fill out the " , cRed("token"));
   if(!config.app_id) console.log(cRed("[WARN]") , "\tPlease fill out the " , cRed("app_id"));
+	if(!config.invite_link) console.log(cRed("[WARN]") , "\tPlease fill out the " , cRed("invite_link"));
   if(!config.command_prefix || config.command_prefix.length !== 1) console.log(cRed("[WARN]") , "\tPrefix either not defined or more than one character");
 	if(!config.mod_command_prefix || config.mod_command_prefix.length !== 1) console.log(cRed("[WARN]") , "\tMod prefix either not defined or more than one character");
   if(!config.time_playing_game) console.log(cRed("[WARN]") , "\tPlease fill out the " , cRed("time_playing_game"));
@@ -281,10 +282,10 @@ function execCommand(msg, cmd, suffix, i, type = "normal") {
       }
 
       cmd = commands[i].on[0];
-      console.log("Main command used: " , commands[i].on[0]);
-      console.log(commands[i].cooldown);
-      console.log(commands[i].hasOwnProperty("cooldown"));
-      console.log(cmd);
+      // console.log("Main command used: " , commands[i].on[0]);
+      // console.log(commands[i].cooldown);
+      // console.log(commands[i].hasOwnProperty("cooldown"));
+      // console.log(cmd);
 
       if (!config.admin_id.includes(msg.author.id) && commands[i].hasOwnProperty("cooldown")) {
   			if (!lastExecTime.hasOwnProperty(cmd))
@@ -312,7 +313,7 @@ function execCommand(msg, cmd, suffix, i, type = "normal") {
     }
 
   } catch (e) {
-
+		if (show_warn) console.log(cRed("[WARN]") + "\tError while execCommand", e);
   } finally {
 
   }
