@@ -1,0 +1,20 @@
+{
+	"token": "",
+	"app_id": "",
+
+	"invite_link": "https://discord.gg/2Ee2XPw",
+
+	"command_prefix": "*",
+	"mod_command_prefix": ".",
+
+	"time_playing_game": 5,
+	"bot_msg_joining": true,
+
+	"debug": false,
+	"show_warn": false,
+
+	"admin_id": [""],
+	"banned_server_ids": [""],
+	"whitelist": [""]
+
+}
