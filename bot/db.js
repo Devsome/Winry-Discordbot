@@ -5,7 +5,7 @@ const config  = require("./../config/config.json");
 const utils   = require("./../bot/utils.js");
 
 ServerSettings = require("./../database/servers.json");
-let Times = require("./../database/times.json");
+Times = require("./../database/times.json");
 
 /**
   * Some variables for the database
@@ -31,6 +31,23 @@ setInterval(() => {
 exports.serverIsNew = function(server) {
 	return !Times.hasOwnProperty(server.id);
 }
+
+exports.changeSetting = function(key, value, serverId) {
+	if (!key || value == undefined || value == null || !serverId) return;
+	switch (key) {
+		case 'banAlerts':
+			ServerSettings[serverId].banAlerts = value; break;
+		case 'nameChanges':
+			ServerSettings[serverId].nameChanges = value; break;
+		case 'deleteCommands':
+			ServerSettings[serverId].deleteCommands = value; break;
+		case 'notifyChannel':
+			ServerSettings[serverId].notifyChannel = value; break;
+		case 'welcome':
+			ServerSettings[serverId].welcome = value; break;
+	}
+	updatedS = true;
+};
 
 exports.checkServers = function(clientBot) {
   inactive = [];
@@ -96,6 +113,16 @@ exports.addServerToTimes = function(server) {
 		updatedT = true;
 	}
 };
+
+var addServer = function(server) {
+	if (!server) return
+	if (!ServerSettings.hasOwnProperty(server.id)) {
+		ServerSettings[server.id] = {"ignore":[], "banAlerts":false, "nameChanges":false, "welcome":"none", "deleteCommands":false, "notifyChannel":"general"};
+		updatedS = true;
+	}
+}
+
+exports.addServer = addServer;
 
 exports.updateTimestamp = function(server) {
 	if (!server || !server.id) return;

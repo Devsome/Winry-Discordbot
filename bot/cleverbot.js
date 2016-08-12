@@ -33,7 +33,7 @@ exports.cleverbot = function(bot, msg) {
 					delete require.cache[require.resolve("cleverbot-node")];
 					Cleverbot = require('cleverbot-node');
 					Waifu = new Cleverbot();
-					console.log(cWarn("[WARN]") + "\TCleverbot returned nothing");
+					console.log(cRed("[WARN]") + "\TCleverbot returned nothing");
 				} else bot.sendMessage(msg, '💬 ' + ent.decodeHTML(resp.message));
 			});
 		});

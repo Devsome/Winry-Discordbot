@@ -9,7 +9,7 @@ let debug = config.debug;
 
 /*
 Save a file safely
-	dir: path from root folder (EX: db/servers)
+	dir: path from root folder (EX: database/servers)
 	ext: file extension (EX: .json)
 	data: data to be written to the file
 	minSize: will not save if less than this size in bytes (optional, defaults to 5)
@@ -33,6 +33,21 @@ exports.safeSave = function(dir, ext, data, minSize = 5) {
 			});
 		}
 	});
+}
+
+/*
+Tell the user the correct usage of a command
+	cmd: The name of the command
+	usage: The usage of the command
+	msg: The message object to reply to
+	bot: The bot
+	prefix: The command's prefix
+	delay: How long to wait before deleting (optional, defaults to 10 seconds)
+*/
+exports.correctUsage = function(cmd, usage, msg, clientBot, prefix, delay = 10000) {
+	if (!cmd || !msg || !clientBot || !prefix) return;
+	clientBot.sendMessage(msg.channel, msg.author + ": The correct usage is ``" + prefix + cmd + " " + usage + "``", (e, m) => {clientBot.deleteMessage(m, {"wait": delay});});
+	clientBot.deleteMessage(msg, {"wait": delay});
 }
 
 //comma sperate a number

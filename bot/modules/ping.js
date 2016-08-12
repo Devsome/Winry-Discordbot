@@ -4,11 +4,13 @@
   */
 
 var mod = {
+  name: "ping",
   enabled: true,
   on: ["ping", "p"],
-  usage: "<no needed>",
+  usage: "",
   description: "Checking the reaction from the bot",
   cooldown: 15,
+  by: "Devsome",
   process: function(clientBot, msg) {
     if(msg.author.game){
       clientBot.sendMessage(msg.channel, "Why not playing ``" + msg.author.game.name + "`` :rolling_eyes: " , (e,sentMsg) => {
