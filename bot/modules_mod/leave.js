@@ -1,6 +1,5 @@
 /**
-  * This is the ping Plugin
-  * Only answers and edit his message with a ping (time needed to reply)
+  * This is the Leave Plugin
   */
 
 var mod = {

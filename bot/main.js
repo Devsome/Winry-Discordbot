@@ -161,7 +161,7 @@ function bot_timer() {
   * When the Bot is successfully logged in
   */
 clientBot.on("ready", function () {
-	console.log(cGreen("[INFO]"), `\tTo add me visit this url:\n\thttps://discordapp.com/oauth2/authorize?client_id=${config.app_id}&scope=bot&permissions=COMMING\n`);
+	console.log(cGreen("[INFO]"), `\tTo add me visit this url:\n\thttps://discordapp.com/oauth2/authorize?client_id=${config.app_id}&scope=bot&permissions=60416\n`);
 	console.log(cGreen("[INFO]"), "\tReady to begin!");
 	console.log(cGreen("[INFO]"), `\tYou're connected to [${clientBot.servers.length}] Server(s) with ${clientBot.channels.length} Channels!`);
 	remind.checkReminders(clientBot);
@@ -268,6 +268,32 @@ clientBot.on("message", function (msg) {
         }
       }
     }
+
+		//if channel ignored
+    if (!msg.channel.isPrivate && !msg.content.startsWith(config.mod_command_prefix) && ServerSettings.hasOwnProperty(msg.channel.server.id) && ServerSettings[msg.channel.server.id].ignore.includes(msg.channel.id)) {
+      return;
+    }
+		if (config.kappa) {
+			if(msg.content.toLowerCase().indexOf( "kappa" ) >= 0 ) {
+				let emote = getAsset("emotes", "kappa.png");
+				clientBot.sendFile(msg.channel, emote, emote, (err, msg) => {
+					if (err) {
+						clientBot.sendMessage(msg.channel, "I do not have the rights to send a **file** :cry:!");
+					}
+				});
+			}
+		}
+		if (config.feelsbm) {
+			if(msg.content.toLowerCase().indexOf( "feelsbadman" ) >= 0 ) {
+				let emote = getAsset("emotes", "feelsbad.png");
+				clientBot.sendFile(msg.channel, emote, emote, (err, msg) => {
+					if (err) {
+						clientBot.sendMessage(msg.channel, "I do not have the rights to send a **file** :cry:!");
+					}
+				});
+			}
+		}
+
     //no command or mod command
     if (!msg.content.startsWith(config.command_prefix) && !msg.content.startsWith(config.mod_command_prefix)) {
       return;
@@ -275,10 +301,6 @@ clientBot.on("message", function (msg) {
     //if auto-inserted mobile space after prefix
     if (msg.content.indexOf(" ") === 1 && msg.content.length > 2) {
       msg.content = msg.content.replace(" ", "");
-    }
-    //if channel ignored
-    if (!msg.channel.isPrivate && !msg.content.startsWith(config.mod_command_prefix) && ServerSettings.hasOwnProperty(msg.channel.server.id) && ServerSettings[msg.channel.server.id].ignore.includes(msg.channel.id)) {
-      return;
     }
 
     let cmd = msg.content.split(" ")[0].substring(1).toLowerCase();
@@ -385,3 +407,24 @@ function execCommand(msg, cmd, suffix, i, type = "normal") {
 
   }
 }
+
+/**
+  * getAsset
+  * Getting images / files
+  */
+global.getAsset = (prefix, file) => {
+	const fs = require("fs");
+	let path = `./assets/${prefix}/`;
+	try {
+		if(file == "*") {
+			let dir = fs.readdirSync(path);
+			let choice = Math.floor(Math.random() * dir.length);
+			return path + dir[choice];
+		} else {
+			fs.statSync(path + file);
+			return path + file;
+		}
+	} catch(e) {
+		return false;
+	}
+};
