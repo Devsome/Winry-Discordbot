@@ -198,6 +198,21 @@ clientBot.on("serverDeleted", server => {
 });
 
 /**
+  * Server presence
+  */
+clientBot.on("presence", (userOld, userNew) => {
+	if (userOld.username == undefined || userNew.username == undefined)
+		return;
+	if (userOld.username != userNew.username) {
+		clientBot.servers.map(ser => {
+			if (ser.members.get('id', userOld.id)) { //if user in server
+				clientBot.sendMessage(ser, `**Nickname Change:** \`${userOld.username.replace(/@/g, '@\u200b')}\` is now nicknamed  **\`${userNew.username.replace(/@/g, '@\u200b')}\`**`);
+			}
+		});
+	}
+});
+
+/**
   * Server got Created
   */
 clientBot.on("serverCreated", server => {
