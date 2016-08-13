@@ -28,14 +28,20 @@ var mod = {
       } else clientBot.sendMessage(msg.author, toSend + "```");
     } else {
       suffix = suffix.toLowerCase();
-      var found = commands.filter(item => item.name === suffix);
-      if (found[0]) {
+      // var found = commands.filter(item => item.name === suffix); // old function only for name
+      var buff;
+      for (var i = 0; i < commands.length; i++) {
+        if(commands[i].on.indexOf(suffix) > -1) {
+          buff = commands[i];
+        }
+      }
+      if (buff) {
         toSend.push("Command ``" + config.command_prefix + suffix + "``\n```glsl\n");
-        if (found[0].description) toSend.push("Description:# " + found[0].description);
-        if (found[0].usage) toSend.push("\nUsage:# " + found[0].usage);
-        if (found[0].cooldown) toSend.push("\nCooldown:# " + found[0].cooldown + " seconds");
-        if (found[0].on) toSend.push("\nShortcuts:# [ " + found[0].on + " ] can be used");
-        if (found[0].by) toSend.push("\nCoded from:# [" + found[0].by + "]");
+        if (buff.description) toSend.push("Description:# " + buff.description);
+        if (buff.usage) toSend.push("\nUsage:# " + buff.usage);
+        if (buff.cooldown) toSend.push("\nCooldown:# " + buff.cooldown + " seconds");
+        if (buff.on) toSend.push("\nShortcuts:# [ " + buff.on + " ] can be used");
+        if (buff.by) toSend.push("\nCoded from:# [" + buff.by + "]");
         toSend = toSend.join('');
         clientBot.sendMessage(msg, toSend + "\n```");
       } else {
@@ -44,5 +50,10 @@ var mod = {
     }
   }
 };
+
+function findShortcuts(short) {
+  console.log(short.on);
+  return short.on === short.on;
+}
 
 module.exports = mod;
