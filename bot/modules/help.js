@@ -41,7 +41,7 @@ var mod = {
         if (buff.usage) toSend.push("\nUsage:# " + buff.usage);
         if (buff.cooldown) toSend.push("\nCooldown:# " + buff.cooldown + " seconds");
         if (buff.on) toSend.push("\nShortcuts:# [ " + buff.on + " ] can be used");
-        if (buff.by) toSend.push("\nCoded from:# [" + buff.by + "]");
+        if (buff.by) toSend.push("\nCoded by:# [" + buff.by + "]");
         toSend = toSend.join('');
         clientBot.sendMessage(msg, toSend + "\n```");
       } else {
