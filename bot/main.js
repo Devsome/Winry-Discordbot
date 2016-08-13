@@ -135,7 +135,7 @@ function bot_config() {
   */
 function bot_start() {
   clientBot.loginWithToken(config.token, (err, token) => {
-    clientBot.on("error", m => console.log(`${cError(" WARN ")} ${m}`));
+    clientBot.on("error", m => console.log(`${cRed(" WARN ")} ${m}`));
     clientBot.on("warn", m => { if (show_warn) console.log(`${cRed("[WARN]")}\t${m}`); });
     clientBot.on("debug", m => { if (debug) console.log(`${cDebug("[DEBUG]")}\t${m}`); });
   	if (!token) { console.log(cRed("[WARN]") , "\tfailed to connect with the token"); setTimeout(() => { process.exit(0); }, 2000); }
