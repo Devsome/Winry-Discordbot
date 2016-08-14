@@ -31,10 +31,8 @@ exports.countForUser = function(user) {
 
 exports.listForUser = function(user) {
 	let list = [];
-	let count = 0;
 	Object.keys(reminders).map(date => {
-		count++;
-		if (reminders[date].user == user) list.push(count + '.\t' + reminders[date].text+ ''); // +new Date(parseInt(date)).toUTCString()
+		if (reminders[date].user == user) list.push("•" + '\t' + reminders[date].text+ ''); // +new Date(parseInt(date)).toUTCString()
 	});
 	return list;
 };

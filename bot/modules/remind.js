@@ -32,7 +32,7 @@ var mod = {
     } else if (suffix.toLowerCase() === 'list') {
 
       let list = remind.listForUser(msg.author.id);
-      if (list && list.length > 0) clientBot.sendMessage(msg.author, "__Here are your reminders:__\n"+list.join('\n'));
+      if (list && list.length > 0) clientBot.sendMessage(msg.author, "__Here are your reminders:__☑\n"+list.join('\n'));
       else clientBot.sendMessage(msg.author, "Looks like you don't have any reminders!");
 
     } else if (/^.* in( ((\d\d?\d?|a|one|two|three) ?d[ays]*)( and| &|,)?)?( ((\d\d?\d?|a|an|one|two|three) ?h[ours]*)( and| &|,)?)?( ((\d\d?\d?|a|one|two|three) ?m[inutes]*)( and| &|,)?)?( (\d\d?\d?|a|one|two|three) ?s[econds]*)?$/i.test(suffix)) {

@@ -4,6 +4,13 @@
 const config  = require("./../../config/config.json");
 const utils   = require("./../../bot/utils.js");
 
+const RESPONSES = [
+	c => `I chose **${c}**`,
+	c => `I pick **${c}**`,
+	c => `**${c}** is the best choice`,
+	c => `**${c}** is my choice`
+];
+
 var mod = {
   name: "choose",
   enabled: true,
@@ -28,7 +35,7 @@ var mod = {
 					if (Math.random() > 0.3) choice = i;
 				}
 			});
-			clientBot.sendMessage(msg, "I chose **" + choices[choice].replace(/@/g, '@\u200b') + "**");
+			clientBot.sendMessage(msg, RESPONSES[~~(Math.random() * RESPONSES.length)](choices[choice].replace(/@/g, '@\u200b')));
 		}
   }
 };

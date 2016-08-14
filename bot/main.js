@@ -12,6 +12,8 @@ const Discord   = require("discord.js");
 const fs        = require("fs");
 const db        = require("./db.js");
 const remind		= require("./remind.js");
+const away			= require("./away.js");
+const awayDB		= require("./../database/away.json");
 const cleverbot = require("./cleverbot.js").cleverbot;
 const config    = require("./../config/config.json");
 const games     = require("./../config/games.json");
@@ -306,6 +308,25 @@ clientBot.on("message", function (msg) {
 						clientBot.sendMessage(msg.channel, "I do not have the rights to send a **file** :cry:!");
 					}
 				});
+			}
+		}
+
+		// Check for message from AFK user
+		if(awayDB[msg.author.id] && awayDB[msg.author.id].away && !msg.channel.isPrivate) {
+			if (debug) { console.log(cDebug("[DEBUG]") + "\t" + + msg.author.id + " Auto-removed AFK msg"); }
+			away.removeAway(msg.author.id);
+			clientBot.sendMessage(msg.channel, msg.author + " welcome back 👋 Auto-AFK is now disabled for you.");
+		}
+		// Auto afk msg
+		if (msg.mentions) {
+			for(var i=0; i<msg.mentions.length; i++) {
+				if(!msg.mentions[i].clientBot && msg.mentions[i]!=msg.author.id) {
+					if (awayDB[msg.mentions[i].id]) {
+						if (awayDB[msg.mentions[i].id].user.includes(msg.mentions[i].id)) {
+							clientBot.sendMessage(msg.channel, "User **" + msg.mentions[i].name + "** is currently AFK: ``" + awayDB[msg.mentions[i].id].away + "``");
+						}
+					}
+				}
 			}
 		}
 
