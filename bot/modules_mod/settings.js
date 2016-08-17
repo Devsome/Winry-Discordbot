@@ -9,11 +9,11 @@ var mod = {
   name: "settings",
   enabled: true,
   on: ["settings", "change"],
-  usage: "",
+  usage: "<setting> <true|false> | info",
   description: "Server Settings",
   cooldown: 3,
   by: "Devsome",
-  deleteCommand: false,
+  deleteCommand: true,
   process: function(clientBot, msg, suffix) {
     if (msg.channel.isPrivate) { clientBot.sendMessage(msg, "Can't do this in a PM!", (erro, wMessage) => { clientBot.deleteMessage(wMessage, {"wait": 10000}); }); return; }
     if (!msg.channel.permissionsOf(msg.author).hasPermission("manageServer")) { clientBot.sendMessage(msg, "You must have permission to manage the server!", (erro, wMessage) => { clientBot.deleteMessage(wMessage, {"wait": 10000}); }); return; }
@@ -25,11 +25,20 @@ var mod = {
       clientBot.sendMessage(msg, "You must have permission to manage the server!", (e, m) => { clientBot.deleteMessage(m, {"wait": 10000}); });
       return;
     }
-    if (!suffix || !/(.+ .+|check)/.test(suffix)) {
+    if (!suffix || !/(.+ .+|info)/.test(suffix)) {
       utils.correctUsage("settings", this.usage, msg, clientBot, config.mod_command_prefix);
       return;
     }
     if (!ServerSettings.hasOwnProperty(msg.channel.server.id)) db.addServer(msg.channel.server);
+
+    if (suffix.trim().toLowerCase() == "info") {
+      let toSend = '⚙ **Current Settings** ⚙\n**Delete Commands:** ' + ServerSettings[msg.channel.server.id].deleteCommands + '\n**Notification Channel:** ';
+      toSend += (ServerSettings[msg.channel.server.id].notifyChannel == "general") ? 'Default' : '<#' + ServerSettings[msg.channel.server.id].notifyChannel + '>';
+      toSend += (ServerSettings[msg.channel.server.id].ignore.length > 0) ? '\n**Ignored Channels:** <#' + ServerSettings[msg.channel.server.id].ignore.join('> <#') + '>' : '\n**Ignored Channels:** none' ;
+      clientBot.sendMessage(msg, toSend, (erro, wMessage) => {
+        clientBot.deleteMessage(wMessage, {"wait": 15000});
+      });
+    }
 
     // delete true or false
     var regex = /^delete (true|false)$/i;
@@ -58,10 +67,6 @@ var mod = {
           });
         }
       }
-    } else {
-      clientBot.sendMessage(msg, 'Only <true|false> are working!', (erro, wMessage) => {
-        clientBot.deleteMessage(wMessage, {"wait": 8000});
-      });
     }
 
   }
