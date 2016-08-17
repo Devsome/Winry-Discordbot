@@ -12,6 +12,7 @@ var mod = {
   description: "Red or Black to coinflip",
   cooldown: 30,
   by: "Devsome",
+  deleteCommand: false,
   process: function(clientBot, msg, suffix) {
     var suffix = suffix.toLowerCase();
     if(suffix === "black" || suffix === "red") {

@@ -10,6 +10,7 @@ var mod = {
   description: "Gives you are random Dragonball Quote",
   cooldown: 180,
   by: "Devsome",
+  deleteCommand: false,
   process: function(clientBot, msg) {
     var sentences = [
         "``It's not a waste of time, if we're having fun.`` — Android 17",

@@ -1,6 +1,5 @@
 /**
   * This is the ping Plugin
-  * Only answers and edit his message with a ping (time needed to reply)
   */
 
 var mod = {
@@ -11,6 +10,7 @@ var mod = {
   description: "Checking the reaction from the bot",
   cooldown: 15,
   by: "Devsome",
+  deleteCommand: false,
   process: function(clientBot, msg) {
     if(msg.author.game){
       clientBot.sendMessage(msg.channel, "Why not playing ``" + msg.author.game.name + "`` :rolling_eyes: " , (e,sentMsg) => {

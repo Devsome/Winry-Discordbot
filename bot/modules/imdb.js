@@ -8,7 +8,7 @@ var mod = {
   name: "imdb",
   enabled: true,
   on: ["imdb", "movie"],
-  usage: "[<\"series\", \"episode\", or \"movie\">] <query>",
+  usage: "<series, episode, movie>",
   description: "Is searching the IMDB Datebase",
   cooldown: 30,
   by: "Devsome",

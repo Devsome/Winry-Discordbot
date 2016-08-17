@@ -13,6 +13,7 @@ var mod = {
   description: "Will add you to the role",
   cooldown: 3,
   by: "Devsome",
+  deleteCommand: false,
   process: function(clientBot, msg, suffix) {
     if (suffix) {
       var buffer = [];

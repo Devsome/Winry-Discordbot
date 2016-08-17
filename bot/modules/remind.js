@@ -14,6 +14,7 @@ var mod = {
   description: "Will remind you when the time is expired",
   cooldown: 3,
   by: "Devsome",
+  deleteCommand: false,
   process: function(clientBot, msg, suffix) {
     if (/^remove/i.test(suffix)) {
 

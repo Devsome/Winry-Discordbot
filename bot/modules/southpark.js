@@ -10,6 +10,7 @@ var mod = {
   description: "Gives you are random Southpark Quote",
   cooldown: 180,
   by: "Devsome",
+  deleteCommand: false,
   process: function(clientBot, msg) {
     var sentences = [
         "``Mom — kitty is being a dildo.`` — Cartman",

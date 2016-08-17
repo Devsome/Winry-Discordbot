@@ -11,6 +11,7 @@ var mod = {
   usage: "",
   description: "Telling you the truth about the bot commands",
   cooldown: 10,
+  deleteCommand: false,
   process: function(clientBot, msg, suffix) {
     let toSend = [];
     if (!suffix) {

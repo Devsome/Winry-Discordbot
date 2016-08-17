@@ -16,7 +16,7 @@ var mod = {
   enabled: true,
   on: ["choose", "ch"],
   usage: "<option 1> | <option 2> | [option 3] ...",
-  description: "Change the current playing game",
+  description: "Let the Bot choose for you",
   cooldown: 20,
   by: "Devsome",
   deleteCommand: false,
