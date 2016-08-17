@@ -1,6 +1,5 @@
 /**
   * This is the unignore Channel Plugin
-  * By using this the mod can mark channels as unignored
   */
 const config  = require("./../../config/config.json");
 const db  = require("./../../bot/db.js");

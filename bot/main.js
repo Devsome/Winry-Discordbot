@@ -421,7 +421,7 @@ function execCommand(msg, cmd, suffix, i, type = "normal") {
   		}
   		commands[i].process(clientBot, msg, suffix);
 			if (!msg.channel.isPrivate && commands[i].hasOwnProperty("deleteCommand")) {
-				if (commands[i].deleteCommand === true ) //&& ServerSettings.hasOwnProperty(msg.channel.server.id) && ServerSettings[msg.channel.server.id].deleteCommands == true)
+				if (commands[i].deleteCommand === true && ServerSettings.hasOwnProperty(msg.channel.server.id) && ServerSettings[msg.channel.server.id].deleteCommands == true)
 					clientBot.deleteMessage(msg); //delete command if needed
 			}
     } else if (type == "mod") {
@@ -450,7 +450,7 @@ function execCommand(msg, cmd, suffix, i, type = "normal") {
 			}
 			commands_mod[i].process(clientBot, msg, suffix);
 			if (!msg.channel.isPrivate && commands_mod[i].hasOwnProperty("deleteCommand")) {
-				if (commands_mod[i].deleteCommand === true ) //&& ServerSettings.hasOwnProperty(msg.channel.server.id) && ServerSettings[msg.channel.server.id].deleteCommands == true)
+				if (commands_mod[i].deleteCommand === true && ServerSettings.hasOwnProperty(msg.channel.server.id) && ServerSettings[msg.channel.server.id].deleteCommands == true)
 					clientBot.deleteMessage(msg); //delete command if needed
 			}
 

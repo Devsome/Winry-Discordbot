@@ -133,7 +133,15 @@ exports.addServerToTimes = function(server) {
 var addServer = function(server) {
 	if (!server) return
 	if (!ServerSettings.hasOwnProperty(server.id)) {
-		ServerSettings[server.id] = {"ignore":[], "roles":[], "banAlerts":false, "nameChanges":false, "welcome":"none", "deleteCommands":false, "notifyChannel":"general"};
+		ServerSettings[server.id] = {
+			"ignore":[],
+			"roles":[],
+			"banAlerts":false,
+			"nameChanges":false,
+			"welcome":"none",
+			"deleteCommands":true,
+			"notifyChannel":"general"
+		};
 		updatedS = true;
 	}
 }

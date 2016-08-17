@@ -1,6 +1,5 @@
 /**
   * This is the ignore Channel Plugin
-  * By using this the mod can mark channels as ignored
   */
 const config  = require("./../../config/config.json");
 const db  = require("./../../bot/db.js");

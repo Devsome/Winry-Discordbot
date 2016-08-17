@@ -11,6 +11,7 @@ var mod = {
   description: "Kick a user with a message",
   cooldown: 5,
   by: "Devsome",
+  deleteCommand: true,
   process: function(clientBot, msg, suffix) {
     if (msg.channel.isPrivate) return;
     if (!msg.channel.permissionsOf(msg.author).hasPermission("kickMembers"))

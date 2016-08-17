@@ -1,6 +1,6 @@
 /**
   * This is the mod Plugin
-  * Using it will show the user all the commands we got
+  * Using it will show the user all the mod commands we got
   */
 const config  = require("./../../config/config.json");
 
@@ -11,6 +11,7 @@ var mod = {
   usage: "",
   description: "Telling you the truth about the mod bot commands",
   cooldown: 10,
+  deleteCommand: true,
   process: function(clientBot, msg, suffix) {
     let toSend = [];
     if (!suffix) {
