@@ -12,7 +12,7 @@ var mod = {
   on: ["afk", "away"],
   usage: "<message>",
   description: "Is setting your away and the Bot is answering with a message",
-  cooldown: 10,
+  cooldown: 2,
   by: "Devsome",
   deleteCommand: true,
   process: function(clientBot, msg, suffix) {
