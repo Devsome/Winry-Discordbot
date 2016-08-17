@@ -215,6 +215,26 @@ clientBot.on("presence", (userOld, userNew) => {
 });
 
 /**
+  * Server Member Updated
+  */
+clientBot.on("serverMemberUpdated", (ser, userNew, userOld) => {
+	if (typeof userOld.name === "undefined") {
+		// console.log("not cached");
+		// userOld.name = "NULL";
+	}
+	// console.log(typeof userOld.name === "undefined", "1");
+	// console.log(userOld, "2");
+	// console.log(userNew.length, "3");
+	// console.log(userNew, "4");
+
+	console.log(ser.name, userNew.name, userOld.name);
+	if (debug) console.log(cDebug("[DEBUG]") + "\tUser " + userOld.name + " changed " + userNew.name + " on " + ser.name);
+	if (userOld.name != userNew.name) {
+		// clientBot.sendMessage(ser, `**Nickname Change:** \`${userOld.name.replace(/@/g, '@\u200b')}\` is now nicknamed  **\`${userNew.name.replace(/@/g, '@\u200b')}\`**`);
+	}
+});
+
+/**
   * Server got Created
   */
 clientBot.on("serverCreated", server => {
@@ -313,9 +333,9 @@ clientBot.on("message", function (msg) {
 
 		// Check for message from AFK user
 		if(awayDB[msg.author.id] && awayDB[msg.author.id].away && !msg.channel.isPrivate) {
-			if (debug) { console.log(cDebug("[DEBUG]") + "\t" + + msg.author.id + " Auto-removed AFK msg"); }
-			away.removeAway(msg.author.id);
-			clientBot.sendMessage(msg.channel, msg.author + " welcome back 👋 Auto-AFK is now disabled for you.");
+			// if (debug) { console.log(cDebug("[DEBUG]") + "\t" + + msg.author.id + " Auto-removed AFK msg"); }
+			// away.removeAway(msg.author.id);
+			// clientBot.sendMessage(msg.channel, msg.author + " welcome back 👋 Auto-AFK is now disabled for you.");
 		}
 		// Auto afk msg
 		if (msg.mentions) {
@@ -323,7 +343,9 @@ clientBot.on("message", function (msg) {
 				if(!msg.mentions[i].clientBot && msg.mentions[i]!=msg.author.id) {
 					if (awayDB[msg.mentions[i].id]) {
 						if (awayDB[msg.mentions[i].id].user.includes(msg.mentions[i].id)) {
-							clientBot.sendMessage(msg.channel, "User **" + msg.mentions[i].name + "** is currently AFK: ``" + awayDB[msg.mentions[i].id].away + "``");
+							clientBot.sendMessage(msg.channel, "User **" + msg.mentions[i].name + "** is currently away: ``" + awayDB[msg.mentions[i].id].away + "``", (e, m) => {
+		            clientBot.deleteMessage(m, {"wait": 10000});
+		          });
 						}
 					}
 				}
@@ -357,7 +379,7 @@ clientBot.on("message", function (msg) {
 				clientBot.deleteMessage(msg);
 				return;
 			}
-			if (config.admin_id.includes(msg.author.id)) { // only for admin_id
+			// if (config.admin_id.includes(msg.author.id)) { // only for admin_id
 				if (!msg.channel.isPrivate) {
 					db.updateTimestamp(msg.channel.server);
 				}
@@ -366,7 +388,7 @@ clientBot.on("message", function (msg) {
 	          execCommand(msg, cmd, suffix, i, "mod");
 	        }
 	      }
-			}
+			// }
 		}
 
 });

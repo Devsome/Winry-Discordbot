@@ -81,6 +81,22 @@ exports.checkServers = function(clientBot) {
 	if (debug) console.log(cDebug("[DEBUG]") + "\tChecked for inactive servers");
 };
 
+exports.addRole = function(roleId, serverId) {
+	if (!roleId || !serverId) return;
+	if (!ServerSettings[serverId].roles.includes(roleId)) {
+		ServerSettings[serverId].roles.push(roleId);
+		updatedS = true;
+	}
+};
+
+exports.delRole = function(roleId, serverId) {
+	if (!roleId || !serverId) return;
+	if (ServerSettings[serverId].roles.includes(roleId)) {
+		ServerSettings[serverId].roles.splice(ServerSettings[serverId].ignore.indexOf(roleId), 1);
+		updatedS = true;
+	}
+};
+
 exports.ignoreChannel = function(channelId, serverId) {
 	if (!channelId || !serverId) return;
 	if (!ServerSettings[serverId].ignore.includes(channelId)) {
@@ -117,7 +133,7 @@ exports.addServerToTimes = function(server) {
 var addServer = function(server) {
 	if (!server) return
 	if (!ServerSettings.hasOwnProperty(server.id)) {
-		ServerSettings[server.id] = {"ignore":[], "banAlerts":false, "nameChanges":false, "welcome":"none", "deleteCommands":false, "notifyChannel":"general"};
+		ServerSettings[server.id] = {"ignore":[], "roles":[], "banAlerts":false, "nameChanges":false, "welcome":"none", "deleteCommands":false, "notifyChannel":"general"};
 		updatedS = true;
 	}
 }

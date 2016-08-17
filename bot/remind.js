@@ -32,7 +32,11 @@ exports.countForUser = function(user) {
 exports.listForUser = function(user) {
 	let list = [];
 	Object.keys(reminders).map(date => {
-		if (reminders[date].user == user) list.push("•" + '\t' + reminders[date].text+ ''); // +new Date(parseInt(date)).toUTCString()
+		if (reminders[date].user == user) {
+			var timeLeft = Math.floor((parseInt(date) - new Date().getTime()) / 60000);
+			var textLeft = (timeLeft * 60) < 60 ? 'less then a minute*' : timeLeft > 120 ? (Math.round(timeLeft / 60) > 72 ? Math.round((timeLeft / 60) / 24) + ' day(s) left*' : Math.round((timeLeft / 60)) + ' hour(s) left*') : Math.round(timeLeft) + ' minute(s) left*';
+			list.push('\t' + reminders[date].text + '\t• *' + textLeft );
+		}
 	});
 	return list;
 };
@@ -62,10 +66,10 @@ exports.removeReminder = function(text, user, success, fail) {
 	let found = false;
 	Object.keys(reminders).map(t => {
 		if (found) return;
-		if (reminders[t].user == user && reminders[t].text.includes(text)) {
+		if (reminders[t].user == user && (reminders[t].text).toLowerCase().includes(text.toLowerCase())) {
 			delete reminders[t];
 			updatedR = true;
-			if (debug) console.log(cDebug("[DEBUG]") + "Removed reminder for user " + user);
+			if (debug) console.log(cDebug("[DEBUG]") + "\tRemoved reminder for user " + user);
 			found = true;
 		}
 	});

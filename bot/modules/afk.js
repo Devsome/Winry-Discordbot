@@ -10,33 +10,44 @@ var mod = {
   name: "afk",
   enabled: true,
   on: ["afk", "away"],
-  usage: "<message>",
-  description: "Is setting your away and the Bot is answering with a message",
-  cooldown: 10,
+  usage: "<message> | [empty for delete]",
+  description: "Is answering for you while you're away.",
+  cooldown: 2,
   by: "Devsome",
-  deleteCommand: true,
+  deleteCommand: false,
   process: function(clientBot, msg, suffix) {
     if(!suffix) {
-      clientBot.sendMessage(msg.channel, msg.author + " What message should I send when you're AFK? Use the syntax `" + config.command_prefix + this.on + this.usage + "`");
-    } else if(suffix==".") {
-      if (debug) { console.log(cDebug("[DEBUG]") + "\t" + + msg.author.id + " deleted his away status"); }
-      if (awayDB[msg.author.id].user.includes(msg.author.id)) {
-        away.removeAway(msg.author.id);
-        clientBot.sendMessage(msg.channel, msg.author + " OK, I won't show that message anymore.");
+      if (awayDB[msg.author.id]) {
+        if (awayDB[msg.author.id].user.includes(msg.author.id)) {
+          if (debug) { console.log(cDebug("[DEBUG]") + "\t" + + msg.author.id + " deleted his away status"); }
+          away.removeAway(msg.author.id);
+          clientBot.deleteMessage(msg, {"wait": 5000});
+          clientBot.sendMessage(msg.channel, msg.author + " OK, I won't show that message anymore.", (e, m) => {
+            clientBot.deleteMessage(m, {"wait": 5000});
+          });
+        }
       } else {
-        clientBot.sendMessage(msg.channel, msg.auhtor + " I didn't have an AFK message set for you in the first place. Use `" + config.command_prefix + this.on + this.usage + "`");
+        clientBot.sendMessage(msg.channel, msg.author + " I didn't have an AFK message set for you in the first place.\nUse `" + config.command_prefix + this.on + " " + this.usage + "`", (e, m) => {
+          clientBot.deleteMessage(m, {"wait": 8000});
+        });
       }
     } else {
       if (awayDB[msg.author.id]) {
         if (awayDB[msg.author.id].user.includes(msg.author.id)) {
-          clientBot.sendMessage(msg.channel, msg.author + " You have already a AFK message.");
+          clientBot.sendMessage(msg.channel, msg.author + " You have already a AFK message.", (e, m) => {
+            clientBot.deleteMessage(m, {"wait": 5000});
+          });
         } else {
           away.addAway(msg.author.id, suffix);
-          clientBot.sendMessage(msg.channel, msg.author + " saved. I will answer anyone who mention you");
+          clientBot.sendMessage(msg.channel, msg.author + " saved. I will answer anyone who mention you", (e, m) => {
+            clientBot.deleteMessage(m, {"wait": 8000});
+          });
         }
-      } else { // only when the file is empty
+      } else {
         away.addAway(msg.author.id, suffix);
-        clientBot.sendMessage(msg.channel, msg.author + " saved. I will answer anyone who mention you");
+        clientBot.sendMessage(msg.channel, msg.author + " saved. I will answer anyone who mention you", (e, m) => {
+          clientBot.deleteMessage(m, {"wait": 8000});
+        });
       }
 
     }

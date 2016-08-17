@@ -1,6 +1,7 @@
 /**
   * This is the mod kick Plugin
   */
+const config  = require("./../../config/config.json");
 
 var mod = {
   name: "kick",
@@ -12,7 +13,7 @@ var mod = {
   by: "Devsome",
   process: function(clientBot, msg, suffix) {
     if (msg.channel.isPrivate) return;
-    if (!msg.channel.permissionsOf(msg.author).hasPermission("kickMembers") && !config.admin_id.includes(msg.author.id))
+    if (!msg.channel.permissionsOf(msg.author).hasPermission("kickMembers"))
       clientBot.sendMessage(msg, "You don't have permission", (e, m) => { bot.deleteMessage(m, {"wait": 10000}); });
     else if (!msg.channel.permissionsOf(clientBot.user).hasPermission("kickMembers"))
       clientBot.sendMessage(msg, "I don't have permission", (e, m) => { clientBot.deleteMessage(m, {"wait": 10000}); });

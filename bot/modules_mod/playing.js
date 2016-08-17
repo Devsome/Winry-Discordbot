@@ -14,11 +14,13 @@ var mod = {
   by: "Devsome",
   deleteCommand: true,
   process: function(clientBot, msg, suffix) {
+    if (config.admin_id.includes(msg.author.id)) {
       if (!suffix) {
         clientBot.setPlayingGame(games[Math.floor(Math.random() * (games.length))]);
       } else {
         clientBot.setPlayingGame(suffix);
-      }
+      }  
+    }
   }
 };
 

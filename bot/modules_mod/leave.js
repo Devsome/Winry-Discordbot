@@ -12,10 +12,12 @@ var mod = {
   by: "Devsome",
   deleteCommand: true,
   process: function(clientBot, msg) {
-    clientBot.sendMessage(msg.server.defaultChannel, `It's me **${clientBot.user.username.replace(/@/g, '@\u200b')}** , I should leave your server !`);
-    setTimeout(() => {
-      clientBot.leaveServer(msg.server);
-    }, 1000);
+    if (config.admin_id.includes(msg.author.id)) {
+      clientBot.sendMessage(msg.server.defaultChannel, `It's me **${clientBot.user.username.replace(/@/g, '@\u200b')}** , I should leave your server !`);
+      setTimeout(() => {
+        clientBot.leaveServer(msg.server);
+      }, 1000);
+    }
   }
 };
 
