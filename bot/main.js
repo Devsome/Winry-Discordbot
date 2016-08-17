@@ -113,8 +113,6 @@ function loadPlugin(filename, module, dir) {
 	    }
 	  );
 	}
-
-
 }
 
 /**
@@ -219,18 +217,16 @@ clientBot.on("presence", (userOld, userNew) => {
   */
 clientBot.on("serverMemberUpdated", (ser, userNew, userOld) => {
 	if (typeof userOld.name === "undefined") {
-		// console.log("not cached");
-		// userOld.name = "NULL";
+		userOld.name = userOld.nick;
 	}
-	// console.log(typeof userOld.name === "undefined", "1");
-	// console.log(userOld, "2");
-	// console.log(userNew.length, "3");
-	// console.log(userNew, "4");
-
-	console.log(ser.name, userNew.name, userOld.name);
-	if (debug) console.log(cDebug("[DEBUG]") + "\tUser " + userOld.name + " changed " + userNew.name + " on " + ser.name);
-	if (userOld.name != userNew.name) {
-		// clientBot.sendMessage(ser, `**Nickname Change:** \`${userOld.name.replace(/@/g, '@\u200b')}\` is now nicknamed  **\`${userNew.name.replace(/@/g, '@\u200b')}\`**`);
+	var nick;
+	if (!ser.detailsOfUser(userNew.id).nick != null) {
+		nick = userNew.name
+	} else {
+		nick = ser.detailsOfUser(userNew.id).nick;
+	}
+	if (userOld.name != nick) {
+		if (debug) console.log(cDebug("[DEBUG]") + "\tUser " + userOld.name + " changed his to " + nick + " on " + ser.name);
 	}
 });
 
