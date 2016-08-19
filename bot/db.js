@@ -35,16 +35,14 @@ exports.serverIsNew = function(server) {
 exports.changeSetting = function(key, value, serverId) {
 	if (!key || value == undefined || value == null || !serverId) return;
 	switch (key) {
-		case 'banAlerts':
-			ServerSettings[serverId].banAlerts = value; break;
-		case 'nameChanges':
-			ServerSettings[serverId].nameChanges = value; break;
 		case 'deleteCommands':
 			ServerSettings[serverId].deleteCommands = value; break;
 		case 'notifyChannel':
 			ServerSettings[serverId].notifyChannel = value; break;
-		case 'welcome':
-			ServerSettings[serverId].welcome = value; break;
+		case 'modPrefix':
+			ServerSettings[serverId].mod_command_prefix = value; break;
+		case 'prefixPrefix':
+			ServerSettings[serverId].command_prefix = value; break;
 	}
 	updatedS = true;
 };
@@ -58,14 +56,15 @@ exports.checkServers = function(clientBot) {
   clientBot.servers.map(server => {
     if (server == undefined) return;
     if (!Times.hasOwnProperty(server.id)) {
-      console.log(cGreen("Joined server: ") + server.name);
+      console.log(cGreen("[INFO]\tJoined server: ") + server.name);
       if (config.banned_server_ids && config.banned_server_ids.includes(server.id)) {
-        console.log(cRed("Joined server but it was on the ban list") + ": " + server.name);
+        console.log(cRed("[WARN]\tJoined server but it was on the ban list") + ": " + server.name);
         clientBot.sendMessage(server.defaultChannel, `It's me **${clientBot.user.username.replace(/@/g, '@\u200b')}** , banned from your Server !`);
         setTimeout(() => {clientBot.leaveServer(server);}, 1000);
       } else {
         if (!config.whitelist.includes(server.id)) {
           if(config.bot_msg_joining){
+						if (!ServerSettings.hasOwnProperty(server.id)) db.addServerToTimes(server);
             clientBot.sendMessage(server.defaultChannel, `Hi! I'm **${clientBot.user.username.replace(/@/g, '@\u200b')}** 👋🏻 \nYou can use with **\`${config.command_prefix}help\`** to see what I can do.\nHope we have a great time together :3`);
           }
         }
@@ -136,11 +135,11 @@ var addServer = function(server) {
 		ServerSettings[server.id] = {
 			"ignore":[],
 			"roles":[],
-			"banAlerts":false,
 			"nameChanges":false,
-			"welcome":"none",
 			"deleteCommands":true,
-			"notifyChannel":"general"
+			"notifyChannel":server.id,
+			"command_prefix": config.command_prefix,
+			"mod_command_prefix": config.mod_command_prefix
 		};
 		updatedS = true;
 	}

@@ -1,6 +1,7 @@
 /**
   * This is the Leave Plugin
   */
+const config  = require("./../../config/config.json");
 
 var mod = {
   name: "leave",

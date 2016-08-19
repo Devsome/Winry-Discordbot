@@ -14,7 +14,6 @@ var mod = {
   by: "Devsome",
   deleteCommand: true,
   process: function(clientBot, msg) {
-    if (msg.channel.isPrivate) { clientBot.sendMessage(msg, "Can't do this in a PM!", (erro, wMessage) => { clientBot.deleteMessage(wMessage, {"wait": 10000}); }); return; }
     if (!msg.channel.permissionsOf(msg.author).hasPermission("manageServer")) { clientBot.sendMessage(msg, "You must have permission to manage the server!", (erro, wMessage) => { clientBot.deleteMessage(wMessage, {"wait": 10000}); }); return; }
     if (!ServerSettings.hasOwnProperty(msg.channel.server.id)) db.addServer(msg.channel.server);
     var buffer = [];
@@ -29,7 +28,7 @@ var mod = {
     if (!ServerSettings[msg.channel.server.id].roles.length > 0) {
       toSend.push("\nEmpty\n\t#ID:0");
       toSend.push("\nYou need to add roles first:");
-      toSend.push("\n\t" + config.mod_command_prefix + "addrole " + "Rolename");
+      toSend.push("\n\t" + ServerSettings[msg.channel.server.id].mod_command_prefix + "addrole " + "Rolename");
     } else {
       Object.keys(ServerSettings[msg.channel.server.id].roles).forEach(x => {
         found = buffer.filter(y => y.id === ServerSettings[msg.channel.server.id].roles[x]);

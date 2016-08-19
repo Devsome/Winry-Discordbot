@@ -15,11 +15,11 @@ var mod = {
   process: function(clientBot, msg, suffix) {
     let toSend = [];
     if (!suffix) {
-      toSend.push("Use `" + config.mod_command_prefix + "help <command name>` to get more info on a mod command.\n");
+      toSend.push("Use `" + ServerSettings[msg.channel.server.id].mod_command_prefix + "help <command name>` to get more info on a mod command.\n");
       toSend.push("Mod commands you can use:```glsl\n");
       Object.keys(commands_mod).forEach(cmd => {
         if (!commands_mod[cmd].hasOwnProperty("shouldDisplay") || (commands_mod[cmd].hasOwnProperty("shouldDisplay") && commands_mod[cmd].shouldDisplay))
-          toSend.push("\n" + config.mod_command_prefix + commands_mod[cmd].on[0] + " " + commands_mod[cmd].usage + "\n\t#" + commands_mod[cmd].description);
+          toSend.push("\n" + ServerSettings[msg.channel.server.id].mod_command_prefix + commands_mod[cmd].on[0] + " " + commands_mod[cmd].usage + "\n\t#" + commands_mod[cmd].description);
       });
       toSend = toSend.join('');
       if (toSend.length >= 1990) {
@@ -35,7 +35,7 @@ var mod = {
         }
       }
       if (buff) {
-        toSend.push("Mod command ``" + config.mod_command_prefix + suffix + "``\n```glsl\n");
+        toSend.push("Mod command ``" + ServerSettings[msg.channel.server.id].mod_command_prefix + suffix + "``\n```glsl\n");
         if (buff.description) toSend.push("Description:# " + buff.description);
         if (buff.usage) toSend.push("\nUsage:# " + buff.usage);
         if (buff.cooldown) toSend.push("\nCooldown:# " + buff.cooldown + " seconds");

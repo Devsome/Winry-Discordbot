@@ -13,7 +13,6 @@ var mod = {
   by: "Devsome",
   deleteCommand: true,
   process: function(clientBot, msg, suffix) {
-    if (msg.channel.isPrivate) return;
     if (!msg.channel.permissionsOf(msg.author).hasPermission("kickMembers"))
       clientBot.sendMessage(msg, "You don't have permission", (e, m) => { bot.deleteMessage(m, {"wait": 10000}); });
     else if (!msg.channel.permissionsOf(clientBot.user).hasPermission("kickMembers"))
@@ -27,7 +26,7 @@ var mod = {
         }
       });
       clientBot.sendMessage(msg, msg.author.username + " 👌🏻", (e, m) => { clientBot.deleteMessage(m, {"wait": 10000}); });
-    } else utils.correctUsage("kick", this.usage, msg, clientBot, config.mod_command_prefix);
+    } else utils.correctUsage("kick", this.usage, msg, clientBot, ServerSettings[msg.channel.server.id].mod_command_prefix);
   }
 };
 

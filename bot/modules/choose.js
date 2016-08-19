@@ -22,12 +22,12 @@ var mod = {
   deleteCommand: false,
   process: function(clientBot, msg, suffix) {
     if (!suffix) {
-			utils.correctUsage("choose", this.usage, msg, clientBot, config.command_prefix);
+			utils.correctUsage("choose", this.usage, msg, clientBot, ServerSettings[msg.channel.server.id].command_prefix);
 			return;
 		}
 		let choices = suffix.split(/ ?\| ?/);
 		if (choices.length < 2 && suffix.includes(',')) choices = suffix.split(/, ?/);
-		if (choices.length < 2) utils.correctUsage("choose", this.usage, msg, clientBot, config.command_prefix);
+		if (choices.length < 2) utils.correctUsage("choose", this.usage, msg, clientBot, ServerSettings[msg.channel.server.id].command_prefix);
 		else {
 			let choice = Math.floor(Math.random() * (choices.length));
 			choices.forEach((c, i) => {

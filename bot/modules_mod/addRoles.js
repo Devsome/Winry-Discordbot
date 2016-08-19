@@ -15,7 +15,6 @@ var mod = {
   by: "Devsome",
   deleteCommand: false,
   process: function(clientBot, msg, suffix) {
-    if (msg.channel.isPrivate) { clientBot.sendMessage(msg, "Can't do this in a PM!", (erro, wMessage) => { clientBot.deleteMessage(wMessage, {"wait": 10000}); }); return; }
     if (!msg.channel.permissionsOf(msg.author).hasPermission("manageServer")) { clientBot.sendMessage(msg, "You must have permission to manage the server!", (erro, wMessage) => { clientBot.deleteMessage(wMessage, {"wait": 10000}); }); return; }
     if (!ServerSettings.hasOwnProperty(msg.channel.server.id)) db.addServer(msg.channel.server);
     if (suffix) {
@@ -49,7 +48,7 @@ var mod = {
         }
       }
     } else {
-      utils.correctUsage("addrole", this.usage, msg, clientBot, config.mod_command_prefix, 15000);
+      utils.correctUsage("addrole", this.usage, msg, clientBot, ServerSettings[msg.channel.server.id].mod_command_prefix, 15000);
     }
   }
 };

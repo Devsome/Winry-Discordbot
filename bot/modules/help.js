@@ -15,12 +15,12 @@ var mod = {
   process: function(clientBot, msg, suffix) {
     let toSend = [];
     if (!suffix) {
-      toSend.push("Use `" + config.command_prefix + "help <command name>` to get more info on a command.\n");
+      toSend.push("Use `" + ServerSettings[msg.channel.server.id].command_prefix + "help <command name>` to get more info on a command.\n");
       toSend.push("Commands you can use:```glsl\n");
       toSend.push("@" + clientBot.user.username + " <text>\n\t#Talk to the bot (cleverbot)");
       Object.keys(commands).forEach(cmd => {
         if (!commands[cmd].hasOwnProperty("shouldDisplay") || (commands[cmd].hasOwnProperty("shouldDisplay") && commands[cmd].shouldDisplay))
-          toSend.push("\n" + config.command_prefix + commands[cmd].on[0] + " " + commands[cmd].usage + "\n\t#" + commands[cmd].description);
+          toSend.push("\n" + ServerSettings[msg.channel.server.id].command_prefix + commands[cmd].on[0] + " " + commands[cmd].usage + "\n\t#" + commands[cmd].description);
       });
       toSend = toSend.join('');
       if (toSend.length >= 1990) {
@@ -37,7 +37,7 @@ var mod = {
         }
       }
       if (buff) {
-        toSend.push("Command ``" + config.command_prefix + suffix + "``\n```glsl\n");
+        toSend.push("Command ``" + ServerSettings[msg.channel.server.id].command_prefix + suffix + "``\n```glsl\n");
         if (buff.description) toSend.push("Description:# " + buff.description);
         if (buff.usage) toSend.push("\nUsage:# " + buff.usage);
         if (buff.cooldown) toSend.push("\nCooldown:# " + buff.cooldown + " seconds");

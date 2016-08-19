@@ -27,29 +27,34 @@ var mod = {
           });
         }
       } else {
-        clientBot.sendMessage(msg.channel, msg.author + " I didn't have an AFK message set for you in the first place.\nUse `" + config.command_prefix + this.on + " " + this.usage + "`", (e, m) => {
+        clientBot.sendMessage(msg.channel, msg.author + " I didn't have an AFK message set for you in the first place.\nUse `" + ServerSettings[msg.channel.server.id].command_prefix + this.on + " " + this.usage + "`", (e, m) => {
           clientBot.deleteMessage(m, {"wait": 8000});
         });
       }
     } else {
-      if (awayDB[msg.author.id]) {
-        if (awayDB[msg.author.id].user.includes(msg.author.id)) {
-          clientBot.sendMessage(msg.channel, msg.author + " You have already a AFK message.", (e, m) => {
-            clientBot.deleteMessage(m, {"wait": 5000});
-          });
+      if (suffix.length > 50) {
+        clientBot.sendMessage(msg.channel, msg.author + " Only 50 chars are allowed.", (e, m) => {
+          clientBot.deleteMessage(m, {"wait": 5000});
+        });
+      } else {
+        if (awayDB[msg.author.id]) {
+          if (awayDB[msg.author.id].user.includes(msg.author.id)) {
+            clientBot.sendMessage(msg.channel, msg.author + " You have already a AFK message.", (e, m) => {
+              clientBot.deleteMessage(m, {"wait": 5000});
+            });
+          } else {
+            away.addAway(msg.author.id, suffix);
+            clientBot.sendMessage(msg.channel, msg.author + " saved. I will answer anyone who mention you.", (e, m) => {
+              clientBot.deleteMessage(m, {"wait": 8000});
+            });
+          }
         } else {
           away.addAway(msg.author.id, suffix);
-          clientBot.sendMessage(msg.channel, msg.author + " saved. I will answer anyone who mention you", (e, m) => {
+          clientBot.sendMessage(msg.channel, msg.author + " saved. I will answer anyone who mention you.", (e, m) => {
             clientBot.deleteMessage(m, {"wait": 8000});
           });
         }
-      } else {
-        away.addAway(msg.author.id, suffix);
-        clientBot.sendMessage(msg.channel, msg.author + " saved. I will answer anyone who mention you", (e, m) => {
-          clientBot.deleteMessage(m, {"wait": 8000});
-        });
       }
-
     }
   }
 };

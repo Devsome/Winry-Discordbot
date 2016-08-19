@@ -26,7 +26,7 @@ var mod = {
         });
       } else {
         let list = remind.listForUser(msg.author.id);
-        if (list && list.length > 0) clientBot.sendMessage(msg.author, "__Use `" + config.command_prefix + "remind remove ` + the text from the reminder you wish to remove:__\n"+list.join('\n'));
+        if (list && list.length > 0) clientBot.sendMessage(msg.author, "__Use `" + ServerSettings[msg.channel.server.id].command_prefix + "remind remove ` + the text from the reminder you wish to remove:__\n"+list.join('\n'));
         else clientBot.sendMessage(msg.author, "Looks like you don't have any reminders!");
       }
 
@@ -39,7 +39,7 @@ var mod = {
     } else if (/^.* in( ((\d\d?\d?|a|one|two|three) ?d[ays]*)( and| &|,)?)?( ((\d\d?\d?|a|an|one|two|three) ?h[ours]*)( and| &|,)?)?( ((\d\d?\d?|a|one|two|three) ?m[inutes]*)( and| &|,)?)?( (\d\d?\d?|a|one|two|three) ?s[econds]*)?$/i.test(suffix)) {
 
       if (remind.countForUser(msg.author.id) >= 5) {
-        clientBot.sendMessage(msg.author, "You can't add any more reminders because you already have 5. You can remove a reminder to make space with `" + config.command_prefix + "remind remove <text>`");
+        clientBot.sendMessage(msg.author, "You can't add any more reminders because you already have 5. You can remove a reminder to make space with `" + ServerSettings[msg.channel.server.id].command_prefix + "remind remove <text>`");
         return;
       }
 
@@ -80,7 +80,7 @@ var mod = {
       remind.addReminder(msg.author.id, Date.now() + millisecs, reminder);
       clientBot.sendMessage(msg, "⏰ Got it! I'll remind you in " + timeString);
 
-    } else utils.correctUsage("remind", this.usage, msg, clientBot, config.command_prefix, 15000);
+    } else utils.correctUsage("remind", this.usage, msg, clientBot, ServerSettings[msg.channel.server.id].command_prefix, 15000);
   }
 };
 

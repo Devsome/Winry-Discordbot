@@ -122,9 +122,9 @@ function bot_config() {
   console.log(cGreen("[INFO]"), "\tLoading the config file.");
   if(!config.token) console.log(cRed("[WARN]") , "\tPlease fill out the " , cRed("token"));
   if(!config.app_id) console.log(cRed("[WARN]") , "\tPlease fill out the " , cRed("app_id"));
-	if(!config.invite_link) console.log(cRed("[WARN]") , "\tPlease fill out the " , cRed("invite_link"));
+  if(!config.invite_link) console.log(cRed("[WARN]") , "\tPlease fill out the " , cRed("invite_link"));
   if(!config.command_prefix || config.command_prefix.length !== 1) console.log(cRed("[WARN]") , "\tPrefix either not defined or more than one character");
-	if(!config.mod_command_prefix || config.mod_command_prefix.length !== 1) console.log(cRed("[WARN]") , "\tMod prefix either not defined or more than one character");
+  if(!config.mod_command_prefix || config.mod_command_prefix.length !== 1) console.log(cRed("[WARN]") , "\tMod prefix either not defined or more than one character");
   if(!config.time_playing_game) console.log(cRed("[WARN]") , "\tPlease fill out the " , cRed("time_playing_game"));
   if(!config.bot_msg_joining) console.log(cRed("[WARN]") , "\tPlease fill out the " , cRed("bot_msg_joining"));
   if(!config.admin_id) console.log(cRed("[WARN]") , "\tPlease fill out the " , cRed("admin_id"));
@@ -165,6 +165,12 @@ clientBot.on("ready", function () {
 	console.log(cGreen("[INFO]"), "\tReady to begin!");
 	console.log(cGreen("[INFO]"), `\tYou're connected to [${clientBot.servers.length}] Server(s) with ${clientBot.channels.length} Channels!`);
 	remind.checkReminders(clientBot);
+	for (var i = 0; i < clientBot.servers.length; i++) {
+		if (!ServerSettings.hasOwnProperty(clientBot.servers[i].id)) {
+			db.addServer(clientBot.servers[i]);
+			console.log(cGreen("[INFO]"), `\tAdded Server ${clientBot.servers[i].name} to the Database !`);
+		}
+	}
 	clientBot.setPlayingGame( games[Math.floor(Math.random() * (games.length))] );
 });
 
@@ -235,15 +241,15 @@ clientBot.on("serverMemberUpdated", (ser, userNew, userOld) => {
   */
 clientBot.on("serverCreated", server => {
 	if (db.serverIsNew(server)) {
-		console.log(cGreen("Joined server: ") + server.name);
+		console.log(cGreen("[INFO]\tJoined server: ") + server.name);
 		if (config.banned_server_ids && config.banned_server_ids.includes(server.id)) {
-			console.log(cRed("Joined server but it was on the ban list") + `: ${server.name}`);
+			console.log(cRed("[WARN]\tJoined server but it was on the ban list") + `: ${server.name}`);
 			clientBot.sendMessage(server.defaultChannel, `It's me **${clientBot.user.username.replace(/@/g, '@\u200b')}** , banned from your Server !`);
 			setTimeout(() => {
 				clientBot.leaveServer(server);
 			}, 1000);
 		} else {
-			db.addServerToTimes(server);
+			if (!ServerSettings.hasOwnProperty(server.id)) db.addServerToTimes(server);
       if(config.bot_msg_joining){
         clientBot.sendMessage(server.defaultChannel, `Hi! I'm **${clientBot.user.username.replace(/@/g, '@\u200b')}** 👋🏻 \nYou can use with **\`${config.command_prefix}help\`** to see what I can do.\nHope we have a great time together :3`);
       }
@@ -275,22 +281,28 @@ function reload() {
 clientBot.on("message", function (msg) {
   if (msg.author.id == clientBot.user.id) return;
 	if (msg.channel.isPrivate) {
-    if (/(^https?:\/\/discord\.gg\/[A-Za-z0-9]+$|^https?:\/\/discordapp\.com\/invite\/[A-Za-z0-9]+$)/.test(msg.content))
-    			clientBot.sendMessage(msg.author, `Use this to bring me to your server: ${config.invite_link}`);
-    		else if (msg.content[0] !== config.command_prefix && msg.content[0] !== config.mod_command_prefix && !msg.content.startsWith('(eval) ')) {
-    			if (!pmCoolDown.hasOwnProperty(msg.author.id)) {
-    				pmCoolDown[msg.author.id] = Date.now();
-    			}
-    			if (Date.now() - pmCoolDown[msg.author.id] > 3000) { // 3 seconds cooldown
-    				if (/^(bitte helfen Sie mir|brauche hilfe|need help)$/i.test(msg.content)) {
-							clientBot.sendMessage(msg.author, "Write this ``" +  config.command_prefix + "help`` to get some help :3");
-    					return;
-    				}
-    				pmCoolDown[msg.author.id] = Date.now();
-            cleverbot(clientBot, msg);
-    				return;
-    			}
-    		}
+		// notice should work !
+		if (msg.content.startsWith(config.mod_command_prefix)) {
+			let cmd = msg.content.split(" ")[0].substring(1).toLowerCase();
+			let suffix = msg.content.substring(cmd.length + 2).trim();
+			if (cmd === "notice") {
+				for (var i = 0; i < commands_mod.length; i++) {
+					if(commands_mod[i].on.indexOf(cmd) > -1) {
+						execCommand(msg, cmd, suffix, i, "mod");
+					}
+				}
+			}
+		} else {
+			if (!pmCoolDown.hasOwnProperty(msg.author.id)) {
+				pmCoolDown[msg.author.id] = Date.now();
+			}
+			if (Date.now() - pmCoolDown[msg.author.id] > 3000) { // 3 seconds cooldown
+				pmCoolDown[msg.author.id] = Date.now();
+				cleverbot(clientBot, msg);
+				return;
+			}
+		}
+
     } else { // not Private Message (DM)
       if (msg.mentions.length !== 0) {
         if (msg.isMentioned(clientBot.user) && new RegExp('^<@!?' + clientBot.user.id + '>').test(msg.content)) { //if mentioned first
@@ -302,8 +314,8 @@ clientBot.on("message", function (msg) {
       }
     }
 
-		//if channel ignored
-    if (!msg.channel.isPrivate && !msg.content.startsWith(config.mod_command_prefix) && ServerSettings.hasOwnProperty(msg.channel.server.id) && ServerSettings[msg.channel.server.id].ignore.includes(msg.channel.id)) {
+	//if channel ignored
+    if (!msg.channel.isPrivate && !msg.content.startsWith(ServerSettings[msg.channel.server.id].mod_command_prefix) && ServerSettings.hasOwnProperty(msg.channel.server.id) && ServerSettings[msg.channel.server.id].ignore.includes(msg.channel.id)) {
       return;
     }
 		if (config.kappa) {
@@ -348,45 +360,44 @@ clientBot.on("message", function (msg) {
 			}
 		}
 
-    //no command or mod command
-    if (!msg.content.startsWith(config.command_prefix) && !msg.content.startsWith(config.mod_command_prefix)) {
-      return;
-    }
-    //if auto-inserted mobile space after prefix
-    if (msg.content.indexOf(" ") === 1 && msg.content.length > 2) {
-      msg.content = msg.content.replace(" ", "");
-    }
+    // no private
+	if(!msg.channel.isPrivate) {
+		//no command or mod command
+		if (!msg.content.startsWith(ServerSettings[msg.channel.server.id].command_prefix) && !msg.content.startsWith(ServerSettings[msg.channel.server.id].mod_command_prefix)) {
+		  return;
+		}
+		//if auto-inserted mobile space after prefix
+		if (msg.content.indexOf(" ") === 1 && msg.content.length > 2) {
+		  msg.content = msg.content.replace(" ", "");
+		}
 
-    let cmd = msg.content.split(" ")[0].substring(1).toLowerCase();
-    let suffix = msg.content.substring(cmd.length + 2).trim();
-    if (msg.content.startsWith(config.command_prefix)) {
-
-			if (!msg.channel.isPrivate) {
-				db.updateTimestamp(msg.channel.server);
+		let cmd = msg.content.split(" ")[0].substring(1).toLowerCase();
+		let suffix = msg.content.substring(cmd.length + 2).trim();
+		if (msg.content.startsWith(ServerSettings[msg.channel.server.id].command_prefix)) {
+				if (!msg.channel.isPrivate) {
+					db.updateTimestamp(msg.channel.server);
+				}
+		  for (var i = 0; i < commands.length; i++) {
+			if(commands[i].on.indexOf(cmd) > -1) {
+			  execCommand(msg, cmd, suffix, i);
 			}
-      for (var i = 0; i < commands.length; i++) {
-        if(commands[i].on.indexOf(cmd) > -1) {
-          execCommand(msg, cmd, suffix, i);
-        }
-      }
-    } else if (msg.content.startsWith(config.mod_command_prefix)) {
+		  }
+		} else if (msg.content.startsWith(ServerSettings[msg.channel.server.id].mod_command_prefix)) {
 			if (cmd === "reload" && config.admin_id.includes(msg.author.id)) {
 				reload();
 				clientBot.deleteMessage(msg);
 				return;
 			}
-			// if (config.admin_id.includes(msg.author.id)) { // only for admin_id
-				if (!msg.channel.isPrivate) {
-					db.updateTimestamp(msg.channel.server);
+			if (!msg.channel.isPrivate) {
+				db.updateTimestamp(msg.channel.server);
+			}
+			for (var i = 0; i < commands_mod.length; i++) {
+				if(commands_mod[i].on.indexOf(cmd) > -1) {
+					execCommand(msg, cmd, suffix, i, "mod");
 				}
-	      for (var i = 0; i < commands_mod.length; i++) {
-	        if(commands_mod[i].on.indexOf(cmd) > -1) {
-	          execCommand(msg, cmd, suffix, i, "mod");
-	        }
-	      }
-			// }
+			}
 		}
-
+	}
 });
 
 /**

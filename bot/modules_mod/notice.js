@@ -57,7 +57,7 @@ var mod = {
           announceMessages.push(suffix);
           let code = Math.floor(Math.random() * 100000);
           confirmCodes.push(code);
-          clientBot.sendMessage(msg, "This will send a message to **all** users in this server ⚠ \nWrite this to continue: `" + config.mod_command_prefix + "notice " + code + "`");
+          clientBot.sendMessage(msg, "This will send a message to **all** users in this server ⚠ \nWrite this to continue: `" + ServerSettings[msg.channel.server.id].mod_command_prefix + "notice " + code + "`");
         }
       } else if (msg.channel.isPrivate && config.admin_id.includes(msg.author.id)) {
         if (/^\d+$/.test(suffix)) {
