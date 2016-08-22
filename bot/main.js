@@ -11,6 +11,7 @@
 const Discord   = require("discord.js");
 const fs        = require("fs");
 const db        = require("./db.js");
+const git  			= require("./git.js");
 const remind		= require("./remind.js");
 const away			= require("./away.js");
 const awayDB		= require("./../database/away.json");
@@ -28,14 +29,13 @@ cDebug = clk.bgWhite.black;
 cGreen = clk.bold.green;
 cRed = clk.bold.red;
 
-
 /**
   * Some variables for the application
   */
 let lastExecTime = {},
 		pmCoolDown = {};
 setInterval( () => { lastExecTime = {};pmCoolDown = {} },3600000 ); // 3600 sekunden => 60 minuten
-let show_warn = config.show_warn, debug = config.debug;
+let show_warn = config.show_warn, debug = config.debug, pluginLoading = config.plugin_info;
 global.commands = [];
 global.commands_mod = [];
 
@@ -84,7 +84,7 @@ function modules_load(dir) {
   */
 function loadPlugin(filename, module, dir) {
   if (module.on !== false) {
-    if(debug) { console.log(cDebug("[DEBUG]") , "The module " + filename[0] + " will react to " + module.on); }
+    if(pluginLoading) { console.log(cDebug("[DEBUG]") , "The module " + filename[0] + " will react to " + module.on); }
   }
 	if(dir === "modules"){
 	  commands.push(
@@ -151,10 +151,17 @@ function bot_timer() {
     clientBot.setPlayingGame(games[Math.floor(Math.random() * (games.length))]);
   }, (config.time_playing_game * 1000) * 60);
   // Checking the database
-  setTimeout(() => {db.checkServers(clientBot)}, 10000);
+  setTimeout(() => {
+		db.checkServers(clientBot)
+	}, 10000);
+	// Checking the reminders
 	setInterval(() => {
 		remind.checkReminders(clientBot);
 	}, 30000);
+	// Checking newest git commits
+	setInterval(() => {
+		git.checkCommits(clientBot);
+	}, 60000 * 30)
 }
 
 /**
@@ -251,7 +258,7 @@ clientBot.on("serverCreated", server => {
 		} else {
 			if (!ServerSettings.hasOwnProperty(server.id)) db.addServerToTimes(server);
       if(config.bot_msg_joining){
-        clientBot.sendMessage(server.defaultChannel, `Hi! I'm **${clientBot.user.username.replace(/@/g, '@\u200b')}** 👋🏻 \nYou can use with **\`${config.command_prefix}help\`** to see what I can do.\nHope we have a great time together :3`);
+        clientBot.sendMessage(server.defaultChannel, `Hi! I'm **${clientBot.user.username.replace(/@/g, '@\u200b')}** 👋🏻 \nYou can use me with **\`${config.command_prefix}help\`** to see what I can do.\nHope we have a great time together :3`);
       }
 		}
 	}
@@ -302,17 +309,16 @@ clientBot.on("message", function (msg) {
 				return;
 			}
 		}
-
-    } else { // not Private Message (DM)
-      if (msg.mentions.length !== 0) {
-        if (msg.isMentioned(clientBot.user) && new RegExp('^<@!?' + clientBot.user.id + '>').test(msg.content)) { //if mentioned first
-          if (!ServerSettings.hasOwnProperty(msg.channel.server.id) || (ServerSettings.hasOwnProperty(msg.channel.server.id) && !ServerSettings[msg.channel.server.id].ignore.includes(msg.channel.id))) { //if channel not ignored
-            cleverbot(clientBot, msg);
-            db.updateTimestamp(msg.channel.server);
-          }
+  } else { // not Private Message (DM)
+    if (msg.mentions.length !== 0) {
+      if (msg.isMentioned(clientBot.user) && new RegExp('^<@!?' + clientBot.user.id + '>').test(msg.content)) { //if mentioned first
+        if (!ServerSettings.hasOwnProperty(msg.channel.server.id) || (ServerSettings.hasOwnProperty(msg.channel.server.id) && !ServerSettings[msg.channel.server.id].ignore.includes(msg.channel.id))) { //if channel not ignored
+          cleverbot(clientBot, msg);
+          db.updateTimestamp(msg.channel.server);
         }
       }
     }
+  }
 
 	//if channel ignored
     if (!msg.channel.isPrivate && !msg.content.startsWith(ServerSettings[msg.channel.server.id].mod_command_prefix) && ServerSettings.hasOwnProperty(msg.channel.server.id) && ServerSettings[msg.channel.server.id].ignore.includes(msg.channel.id)) {
@@ -341,9 +347,11 @@ clientBot.on("message", function (msg) {
 
 		// Check for message from AFK user
 		if(awayDB[msg.author.id] && awayDB[msg.author.id].away && !msg.channel.isPrivate) {
-			// if (debug) { console.log(cDebug("[DEBUG]") + "\t" + + msg.author.id + " Auto-removed AFK msg"); }
-			// away.removeAway(msg.author.id);
-			// clientBot.sendMessage(msg.channel, msg.author + " welcome back 👋 Auto-AFK is now disabled for you.");
+			if (debug) { console.log(cDebug("[DEBUG]") + "\t" + + msg.author.id + " Auto-removed AFK msg"); }
+			away.removeAway(msg.author.id);
+			clientBot.sendMessage(msg.channel, msg.author + " welcome back 👋 Auto-AFK is now disabled for you.", (e, m) => {
+				clientBot.deleteMessage(m, {"wait": 3000});
+			});
 		}
 		// Auto afk msg
 		if (msg.mentions) {

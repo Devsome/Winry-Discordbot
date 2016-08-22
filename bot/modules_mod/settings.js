@@ -20,10 +20,6 @@ var mod = {
       clientBot.sendMessage(msg, "Can't do this in a PM!", (e, m) => { clientBot.deleteMessage(m, {"wait": 10000}); });
       return;
     }
-    if (!msg.channel.permissionsOf(msg.author).hasPermission("manageServer")) { // && !config.admin_id.includes(msg.author.id)) {
-      clientBot.sendMessage(msg, "You must have permission to manage the server!", (e, m) => { clientBot.deleteMessage(m, {"wait": 10000}); });
-      return;
-    }
     if (!suffix || !/(.+ .+|info|list)/.test(suffix)) {
       utils.correctUsage("settings", this.usage, msg, clientBot, ServerSettings[msg.channel.server.id].mod_command_prefix);
       return;

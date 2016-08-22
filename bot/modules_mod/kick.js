@@ -20,9 +20,9 @@ var mod = {
     else if (suffix && msg.mentions.length > 0) {
       let kickMessage = suffix.replace(/<@\d+>/g, "").trim();
       msg.mentions.map(unlucky => {
-        if (!kickMessage) msg.channel.server.kickMember(unlucky);
-        else {
-          clientBot.sendMessage(unlucky, "You were kicked from " + msg.channel.server.name + " for reason: " + kickMessage).then(() => msg.channel.server.kickMember(unlucky));
+        msg.channel.server.kickMember(unlucky);
+        if (kickMessage)
+          clientBot.sendMessage(unlucky, "You were kicked from " + msg.channel.server.name + " for reason: " + kickMessage);
         }
       });
       clientBot.sendMessage(msg, msg.author.username + " 👌🏻", (e, m) => { clientBot.deleteMessage(m, {"wait": 10000}); });

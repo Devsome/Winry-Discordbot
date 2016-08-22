@@ -10,8 +10,12 @@
 	"time_playing_game": 5,
 	"bot_msg_joining": true,
 
+	"kappa": true,
+	"feelsbm": true,
+	
 	"debug": true,
 	"show_warn": true,
+	"plugin_info": false,
 
 	"admin_id": [""],
 	"banned_server_ids": [""],

@@ -1,7 +1,6 @@
 /**
   * This is the imdb Plugin
   */
-
 var unirest = require("unirest");
 
 var mod = {
