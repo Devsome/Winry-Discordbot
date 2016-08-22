@@ -9,7 +9,7 @@ var mod = {
   enabled: true,
   on: ["play", "playing"],
   usage: "[game]",
-  description: "Change the current playing game",
+  description: "Change the current playing game (ADMIN ONLY)",
   cooldown: 180,
   by: "Devsome",
   deleteCommand: true,
@@ -19,7 +19,7 @@ var mod = {
         clientBot.setPlayingGame(games[Math.floor(Math.random() * (games.length))]);
       } else {
         clientBot.setPlayingGame(suffix);
-      }  
+      }
     }
   }
 };

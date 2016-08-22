@@ -10,27 +10,16 @@ var mod = {
   name: "afk",
   enabled: true,
   on: ["afk", "away"],
-  usage: "<message> | [empty for delete]",
+  usage: "<message>",
   description: "Is answering for you while you're away.",
   cooldown: 2,
   by: "Devsome",
   deleteCommand: false,
   process: function(clientBot, msg, suffix) {
     if(!suffix) {
-      if (awayDB[msg.author.id]) {
-        if (awayDB[msg.author.id].user.includes(msg.author.id)) {
-          if (debug) { console.log(cDebug("[DEBUG]") + "\t" + + msg.author.id + " deleted his away status"); }
-          away.removeAway(msg.author.id);
-          clientBot.deleteMessage(msg, {"wait": 5000});
-          clientBot.sendMessage(msg.channel, msg.author + " OK, I won't show that message anymore.", (e, m) => {
-            clientBot.deleteMessage(m, {"wait": 5000});
-          });
-        }
-      } else {
-        clientBot.sendMessage(msg.channel, msg.author + " I didn't have an AFK message set for you in the first place.\nUse `" + ServerSettings[msg.channel.server.id].command_prefix + this.on + " " + this.usage + "`", (e, m) => {
-          clientBot.deleteMessage(m, {"wait": 8000});
-        });
-      }
+      clientBot.sendMessage(msg.channel, msg.author + " Please set any afk message.", (e, m) => {
+        clientBot.deleteMessage(m, {"wait": 5000});
+      });
     } else {
       if (suffix.length > 50) {
         clientBot.sendMessage(msg.channel, msg.author + " Only 50 chars are allowed.", (e, m) => {
