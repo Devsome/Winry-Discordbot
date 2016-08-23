@@ -161,7 +161,7 @@ function bot_timer() {
 	// Checking newest git commits
 	setInterval(() => {
 		git.checkCommits(clientBot);
-	}, 60000 * 30)
+	}, 60000 * 35)
 }
 
 /**

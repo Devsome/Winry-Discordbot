@@ -12,7 +12,7 @@ var mod = {
   name: "github",
   enabled: true,
   on: ["git", "github"],
-  usage: "add <owner> <repo> | del <repo> | list",
+  usage: "add <owner> <repo> | del <owner> <repo> | list",
   description: "Adding a Repo to the list",
   cooldown: 5,
   by: "Devsome",
@@ -56,7 +56,7 @@ var mod = {
         .headers({'Accept': 'application/json', 'Content-Type': 'application/json', 'User-Agent': 'Devsome'})
         .end(function(result) {
           if (result.status == 200 && result.body[0].sha) {
-            git.addGithub(msg.channel.server.id, repo);
+            git.addGithub(msg.channel.server.id, repo, result.body[0].sha);
             clientBot.sendMessage(msg, "🆕 Successfully added this Repository.", (erro, wMessage) => {
               clientBot.deleteMessage(wMessage, {"wait": 8000});
             });
@@ -65,6 +65,12 @@ var mod = {
               clientBot.deleteMessage(wMessage, {"wait": 8000});
             });
           }
+        });
+        return;
+      } else {
+        git.updateGithub(msg.channel.server.id, repo);
+        clientBot.sendMessage(msg, "🆕 Successfully added this Repository.", (erro, wMessage) => {
+          clientBot.deleteMessage(wMessage, {"wait": 8000});
         });
         return;
       }
@@ -82,10 +88,10 @@ var mod = {
       repo = match[1].toLowerCase() + "\\" + match[2].toLowerCase();
       if (!gitDB[repo]) {clientBot.sendMessage(msg, "This Repository does not exist.", (erro, wMessage) => { clientBot.deleteMessage(wMessage, {"wait": 8000});}); return;}
       if (gitDB[repo].server.includes(msg.channel.server.id)) {
-        git.removeGithub(msg.channel.server.id, repo);
         clientBot.sendMessage(msg, "🚮 Successfully deleted this Repository.", (erro, wMessage) => {
           clientBot.deleteMessage(wMessage, {"wait": 8000});
         });
+        git.removeGithub(msg.channel.server.id, repo);
       } else {
         clientBot.sendMessage(msg, "This Repository is not in your Server list.", (erro, wMessage) => {
           clientBot.deleteMessage(wMessage, {"wait": 8000});

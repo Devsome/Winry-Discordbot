@@ -9,18 +9,18 @@ var mod = {
   name: "settings",
   enabled: true,
   on: ["settings"],
-  usage: "<setting> <true|false> | info | list",
+  usage: "<setting> <true|false> | info | help",
   description: "Server Settings",
   cooldown: 3,
   by: "Devsome",
   deleteCommand: true,
   process: function(clientBot, msg, suffix) {
-    if (!msg.channel.permissionsOf(msg.author).hasPermission("manageServer")) { clientBot.sendMessage(msg, "You must have permission to manage the server!", (erro, wMessage) => { clientBot.deleteMessage(wMessage, {"wait": 10000}); }); return; }
+    if (!msg.channel.permissionsOf(msg.author).hasPermission("manageServer") && !config.admin_id.includes(msg.author.id)) { clientBot.sendMessage(msg, "You must have permission to manage the server!", (erro, wMessage) => { clientBot.deleteMessage(wMessage, {"wait": 10000}); }); return; }
     if (msg.channel.isPrivate) {
       clientBot.sendMessage(msg, "Can't do this in a PM!", (e, m) => { clientBot.deleteMessage(m, {"wait": 10000}); });
       return;
     }
-    if (!suffix || !/(.+ .+|info|list)/.test(suffix)) {
+    if (!suffix || !/(.+ .+|info|help)/.test(suffix)) {
       utils.correctUsage("settings", this.usage, msg, clientBot, ServerSettings[msg.channel.server.id].mod_command_prefix);
       return;
     }
@@ -50,10 +50,10 @@ var mod = {
     }
 
     // Information about the settings you can change
-    if (suffix.trim().toLowerCase() == "list") {
+    if (suffix.trim().toLowerCase() == "help") {
       toSend = '__**Current changeable Settings**__ ⚙\n```md';
-      toSend += '\n# Will show you the current list of commands';
-      toSend += '\n\t' + ServerSettings[msg.channel.server.id].mod_command_prefix + this.on[0] + ' list';
+      toSend += '\n# Will show you the current help of commands';
+      toSend += '\n\t' + ServerSettings[msg.channel.server.id].mod_command_prefix + this.on[0] + ' help';
       toSend += '\n# Showing the Server settings !';
       toSend += '\n\t' + ServerSettings[msg.channel.server.id].mod_command_prefix + this.on[0] + ' info';
       toSend += '\n# Is changing the Bot Notification channel';
