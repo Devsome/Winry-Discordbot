@@ -94,12 +94,11 @@ exports.checkCommits = function(clientBot) {
 									if (debug) console.log(cDebug("[DEBUG]") + "\tSending commit", result.body[y].sha, "to", git[repo].server[i]);
 									let toSend = [];
 									var fDate = new Date(result.body[y].commit.author.date).toLocaleTimeString("de-DE", options) + ' CEST';
-									toSend.push("Neuer Commit für **"+repo+"**\n\n```md\n");
-									toSend.push(`[Author](${result.body[y].author.login})\n`);
-									toSend.push(`[Date]  (${fDate})\n`);
-									toSend.push(`[Commit](${result.body[y].commit.message})\n`);
+									toSend.push("**"+repo+"** - "+result.body[y].author.login+" <"+result.body[y].html_url+">\n```md\n");
+									toSend.push(`${fDate}\n`);
+									toSend.push("```md\n");
+									toSend.push(`${result.body[y].commit.message})`);
 									toSend.push("```");
-									toSend.push(`\nLink: <${result.body[y].html_url}>\n`);
 									toSend = toSend.join('');
 									clientBot.sendMessage(ServerSettings[git[repo].server[i]].notifyChannel, toSend);
 								}
