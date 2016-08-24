@@ -1,3 +1,7 @@
+/*
+	* This is for the git getting newest commit
+	*/
+const config  = require("./../config/config.json");
 const git = require('./../database/github.json');
 const utils   = require("./../bot/utils.js");
 var unirest = require("unirest");
@@ -68,7 +72,7 @@ Checking for new Commits:
 exports.checkCommits = function(clientBot) {
 	if (debug) console.log(cDebug("[DEBUG]") + "\tPulling newest Repositorys");
 	var options = {
-		weekday: "long", year: "numeric", month: "short",
+		weekday: "short", year: "numeric", month: "2-digit",
 		day: "numeric", hour: "2-digit", minute: "2-digit"
 	};
 
@@ -77,7 +81,7 @@ exports.checkCommits = function(clientBot) {
     	setTimeout( function timer(){
 				repo = Object.keys(git)[j];
 				unirest.get("https://api.github.com/repos/" + repo + "/commits")
-				.headers({'Accept': 'application/json', 'Content-Type': 'application/json', 'User-Agent': 'Devsome'})
+				.headers({'Accept': 'application/json', 'Content-Type': 'application/json', 'User-Agent': 'Devsome', "access_token": config.git_token})
 				.end(function(result) {
 					if (result.status === 403 || result.status === 404) {
 						if (debug) console.log(cRed("[WARN]") + "\t" + result.status + result.message);
@@ -93,12 +97,11 @@ exports.checkCommits = function(clientBot) {
 								for (var i = 0; i < git[repo].server.length; i++) {
 									if (debug) console.log(cDebug("[DEBUG]") + "\tSending commit", result.body[y].sha, "to", git[repo].server[i]);
 									let toSend = [];
-									var fDate = new Date(result.body[y].commit.author.date).toLocaleTimeString("de-DE", options) + ' CEST';
-									toSend.push("**"+repo+"** - "+result.body[y].author.login+" <"+result.body[y].html_url+">\n```md\n");
-									toSend.push(`${fDate}\n`);
-									toSend.push("```md\n");
-									toSend.push(`${result.body[y].commit.message})`);
-									toSend.push("```");
+									var fDate = new Date(result.body[y].commit.author.date).toLocaleTimeString("de-DE", options);
+									toSend.push("\n```md\n");
+									toSend.push(`[${repo}][${result.body[y].author.login}][${fDate}]\n\n`);
+									toSend.push(`${result.body[y].commit.message}`);
+									toSend.push("```<" + result.body[y].html_url + ">");
 									toSend = toSend.join('');
 									clientBot.sendMessage(ServerSettings[git[repo].server[i]].notifyChannel, toSend);
 								}
