@@ -80,11 +80,11 @@ exports.checkCommits = function(clientBot) {
     (function(j){
     	setTimeout( function timer(){
 				repo = Object.keys(git)[j];
-				unirest.get("https://api.github.com/repos/" + repo + "/commits")
-				.headers({'Accept': 'application/json', 'Content-Type': 'application/json', 'User-Agent': 'Devsome', "access_token": config.git_token})
+				unirest.get("https://api.github.com/repos/" + repo + "/commits?access_token=" + config.git_token)
+				.headers({'Accept': 'application/json', 'Content-Type': 'application/json', 'User-Agent': 'Devsome'})
 				.end(function(result) {
 					if (result.status === 403 || result.status === 404) {
-						if (debug) console.log(cRed("[WARN]") + "\t" + result.status + result.message);
+						if (debug) console.log(cRed("[WARN]") + "\t" + result.status + " => " + result.message);
 					}
 					for (var y = 0; y < result.body.length; y++) {
 						if (result.body[y].sha === git[repo].sha) {
