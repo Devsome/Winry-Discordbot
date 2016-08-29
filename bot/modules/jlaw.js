@@ -10,7 +10,7 @@ var mod = {
   description: "Giving your random images from Jennifer Lawrence",
   cooldown: 60,
   by: "Devsome",
-  deleteCommand: true,
+  deleteCommand: false,
   process: function(clientBot, msg) {
     var file = getAsset("jlaw", "*");
     clientBot.sendFile( msg.channel, file, file, (err, msg) => {

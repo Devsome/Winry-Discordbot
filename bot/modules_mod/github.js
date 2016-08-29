@@ -42,7 +42,7 @@ var mod = {
       }
       toSend = toSend.join('');
       clientBot.sendMessage(msg, toSend + "\n```", (erro, wMessage) => {
-        clientBot.deleteMessage(wMessage, {"wait": 10000});
+        clientBot.deleteMessage(wMessage, {"wait": 20000});
       });
     }
 

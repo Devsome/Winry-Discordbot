@@ -10,7 +10,7 @@ var mod = {
   description: "Giving your random images from Emma Watson",
   cooldown: 60,
   by: "Devsome",
-  deleteCommand: true,
+  deleteCommand: false,
   process: function(clientBot, msg) {
     var file = getAsset("emma", "*");
     clientBot.sendFile( msg.channel, file, file, (err, msg) => {
