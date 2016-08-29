@@ -391,12 +391,14 @@ clientBot.on("message", function (msg) {
 	// pat , getting the first mention
 	if (msg.mentions) {
 		if(msg.content.toLowerCase().indexOf( "pat" ) >= 0 ) {
-			let emote = getAsset("pat", "*");
-			clientBot.sendFile(msg.channel, emote, emote, "User **" + msg.author.name + "** is patting " + msg.mentions[0].name, (err, msg) => {
-				if (err) {
-					clientBot.sendMessage(msg.channel, "I do not have the rights to send a **file** :cry:!");
-				}
-			});
+			if(msg.mentions[0]) {
+				let emote = getAsset("pat", "*");
+				clientBot.sendFile(msg.channel, emote, emote, "User **" + msg.author.name + "** is patting " + msg.mentions[0].name, (err, msg) => {
+					if (err) {
+						clientBot.sendMessage(msg.channel, "I do not have the rights to send a **file** :cry:!");
+					}
+				});
+			}
 		}
 	}
 
