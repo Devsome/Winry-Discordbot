@@ -1,4 +1,4 @@
-# EliteBot 2.0
+# Winry (Rockbell) DiscordBot 3.0
 
 Using [Discord.js](https://github.com/hydrabolt/discord.js/)   
 
