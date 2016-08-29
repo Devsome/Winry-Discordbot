@@ -10,16 +10,23 @@ var mod = {
   name: "afk",
   enabled: true,
   on: ["afk", "away"],
-  usage: "<message>",
+  usage: "<message> | empty to delete",
   description: "Is answering for you while you're away.",
   cooldown: 2,
   by: "Devsome",
   deleteCommand: false,
   process: function(clientBot, msg, suffix) {
     if(!suffix) {
-      clientBot.sendMessage(msg.channel, msg.author + " Please set any afk message.", (e, m) => {
-        clientBot.deleteMessage(m, {"wait": 5000});
-      });
+      if (awayDB[msg.author.id]) {
+        away.removeAway(msg.author.id);
+        clientBot.sendMessage(msg.channel, msg.author + " Removed your afk message.", (e, m) => {
+          clientBot.deleteMessage(m, {"wait": 5000});
+        });
+      } else {
+        clientBot.sendMessage(msg.channel, msg.author + " Please set any afk message.", (e, m) => {
+          clientBot.deleteMessage(m, {"wait": 5000});
+        });
+      }
     } else {
       if (suffix.length > 50) {
         clientBot.sendMessage(msg.channel, msg.author + " Only 50 chars are allowed.", (e, m) => {

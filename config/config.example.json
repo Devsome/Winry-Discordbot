@@ -1,6 +1,7 @@
 {
 	"token": "",
 	"app_id": "",
+	"git_token": "",
 
 	"invite_link": "",
 
@@ -12,7 +13,7 @@
 
 	"kappa": true,
 	"feelsbm": true,
-	
+
 	"debug": true,
 	"show_warn": true,
 	"plugin_info": false,

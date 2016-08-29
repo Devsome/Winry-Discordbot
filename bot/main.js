@@ -33,7 +33,8 @@ cRed = clk.bold.red;
   * Some variables for the application
   */
 let lastExecTime = {},
-		pmCoolDown = {};
+		pmCoolDown = {},
+		awayTime = {};
 setInterval( () => { lastExecTime = {};pmCoolDown = {} },3600000 ); // 3600 sekunden => 60 minuten
 let show_warn = config.show_warn, debug = config.debug, pluginLoading = config.plugin_info;
 global.commands = [];
@@ -161,7 +162,7 @@ function bot_timer() {
 	// Checking newest git commits
 	setInterval(() => {
 		git.checkCommits(clientBot);
-	}, 60000 * 35)
+	}, 60000 * 15)
 }
 
 /**
@@ -347,11 +348,20 @@ clientBot.on("message", function (msg) {
 
 		// Check for message from AFK user
 		if(awayDB[msg.author.id] && awayDB[msg.author.id].away && !msg.channel.isPrivate) {
-			if (debug) { console.log(cDebug("[DEBUG]") + "\t" + + msg.author.id + " Auto-removed AFK msg"); }
-			away.removeAway(msg.author.id);
-			clientBot.sendMessage(msg.channel, msg.author + " welcome back 👋 Auto-AFK is now disabled for you.", (e, m) => {
-				clientBot.deleteMessage(m, {"wait": 3000});
-			});
+			if(!awayTime.hasOwnProperty(msg.author.id)) {
+				awayTime[msg.author.id] = {};
+			}
+			if(!awayTime[msg.author.id].hasOwnProperty("time")) {
+				awayTime[msg.author.id]["time"] = Date.now();
+			} else {
+				let now = Date.now();
+				if(now > awayTime[msg.author.id]["time"] + 600000) {// 10 minuten
+					clientBot.sendMessage(msg.channel, msg.author + " Auto-AFK is still enabled for you.\nIf you want to disable it, write ``" + ServerSettings[msg.channel.server.id].command_prefix + "away``", (e, m) => {
+						clientBot.deleteMessage(m, {"wait": 8000});
+					});
+				}
+				awayTime[msg.author.id]["time"] = now;
+			}
 		}
 		// Auto afk msg
 		if (msg.mentions) {
